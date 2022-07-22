@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+    - .:/code
+    ports:
+     - 80:80
+    depends_on:
+      - db
+    links:
+      - db:db
+
+  redis:
+    image: redis
+    command: redis-server
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres
+    volumes:
+    - ./data/db:/var/lib/postgresql/data
+    restart: always
+    env_file:
+      - example.env
+    expose:
+      - "5432"
+
